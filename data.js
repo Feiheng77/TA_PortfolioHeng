@@ -16,7 +16,9 @@ window.SITE = {
       {src: "assets/postfx-tuning.mp4", label: "调参过程"}
     ]},
     {id: "shader", title: "Shader", videos: []},
-    {id: "tools", title: "工具展示", videos: []}
+    {id: "tools", title: "工具展示", videos: [
+      {src: "assets/tools-showcase.mp4"}
+    ]}
   ],
   aliases: {video: "water"}  // 以前发出去的 #video 链接还能打开水体
 };
