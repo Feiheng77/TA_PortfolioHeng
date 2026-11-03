@@ -15,9 +15,10 @@ let drag=null;canvas.addEventListener('pointerdown',e=>{if(e.pointerType!=='mous
 const tabs=S.tabs.filter(t=>t.type==='nodes'||(t.videos&&t.videos.length)),media=$('media'),built={};
 $('tabs').innerHTML=tabs.map(t=>`<a href="#${esc(t.id)}" data-view="${esc(t.id)}">${esc(t.title)}</a>`).join('');
 const biliURL=id=>`https://player.bilibili.com/player.html?bvid=${encodeURIComponent(id)}&page=1&autoplay=0&danmaku=0&high_quality=1`;
-const clipHTML=(v,i,caption)=>{const cap=caption&&v.label?`<figcaption>${esc(v.label)}</figcaption>`:'',src=v.src?esc(v.src):'';
+// with a poster the video downloads nothing until play is pressed; without one it fetches a little to show its first frame
+const clipHTML=(v,i,caption)=>{const cap=caption&&v.label?`<figcaption>${esc(v.label)}</figcaption>`:'',src=v.src?esc(v.src):'',poster=v.poster?esc(v.poster):'';
   if(v.bilibili)return `<figure class="clip" data-i="${i}">${cap}<div class="bili"><iframe data-src="${esc(biliURL(v.bilibili))}" title="${esc(v.label||'视频')}" allowfullscreen allow="fullscreen" scrolling="no" frameborder="0"></iframe></div><div class="video-links"><a href="https://www.bilibili.com/video/${esc(v.bilibili)}" target="_blank" rel="noopener">在 B 站打开 ↗</a>${src?`<a href="${src}" download>下载视频 ↓</a>`:''}</div></figure>`;
-  return `<figure class="clip" data-i="${i}">${cap}<video controls playsinline preload="metadata"><source src="${src}#t=0.1" type="video/mp4">浏览器暂不支持视频播放，请下载视频查看。</video><div class="video-links"><a href="${src}" target="_blank" rel="noopener">新窗口播放 ↗</a><a href="${src}" download>下载视频 ↓</a></div></figure>`};
+  return `<figure class="clip" data-i="${i}">${cap}<video controls playsinline ${poster?`preload="none" poster="${poster}"`:'preload="metadata"'}><source src="${src}${poster?'':'#t=0.1'}" type="video/mp4">浏览器暂不支持视频播放，请下载视频查看。</video><div class="video-links"><a href="${src}" target="_blank" rel="noopener">新窗口播放 ↗</a><a href="${src}" download>下载视频 ↓</a></div></figure>`};
 // a B站 player can't be paused from here, so a player that goes out of sight is unloaded and comes back when shown
 const wake=el=>el.querySelectorAll('iframe[data-src]').forEach(f=>{if(f.getAttribute('src')!==f.dataset.src)f.src=f.dataset.src});
 const sleep=el=>{el.querySelectorAll('video').forEach(v=>v.pause());el.querySelectorAll('iframe[data-src]').forEach(f=>{if(f.getAttribute('src'))f.removeAttribute('src')})};
